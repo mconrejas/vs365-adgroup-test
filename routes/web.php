@@ -23,5 +23,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->get('/me', 'AuthController@me');
         $router->post('/logout', 'AuthController@logout');
+
+        $router->get('/ip', 'IPController@get');
+        $router->post('/ip', 'IPController@store');
+        $router->get('/ip/{id}', 'IPController@show');
+        $router->put('/ip/{id}', 'IPController@update');
+
+        $router->group(['prefix' => 'ip'], function () use ($router) {
+            $router->post('/{ip_id}/comment', 'CommentController@save');
+        });
     });
 });
