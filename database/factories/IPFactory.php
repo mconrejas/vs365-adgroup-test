@@ -22,7 +22,7 @@ class IPFactory extends Factory
     public function definition()
     {
         return [
-            'ip' => mt_rand(0, 255) . "." . mt_rand(0, 255) . "." . mt_rand(0, 255) . "." . mt_rand(0, 255),
+            'ip' => generateIP(),
             'label' => $this->faker->catchPhrase
         ];
     }
