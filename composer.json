@@ -6,8 +6,12 @@
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
+        "anik/form-request": "^4.2",
         "flipbox/lumen-generator": "^8.2",
         "laravel/lumen-framework": "^8.3.1",
+        "laravelista/lumen-vendor-publish": "^8.0",
+        "owen-it/laravel-auditing": "^12.0",
+        "pearl/lumen-request-validate": "^1.6",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
