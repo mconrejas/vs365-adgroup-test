@@ -20,8 +20,8 @@ class CommentController extends Controller
     public function save(CommentRequest $request, $ip_id)
     {
         try {
-            $comment = Comment::updateOrCreate(
-                [ 'ip_id' => $ip_id, 'user_id' => auth()->user()->id ],
+            $comment = auth()->user()->load('comments')->comments()->updateOrCreate(
+                [ 'ip_id' => $ip_id ],
                 [ 'comment' => $request->comment ]
             );
 
