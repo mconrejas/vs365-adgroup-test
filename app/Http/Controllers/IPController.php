@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Resources\IPResource;
 use App\Http\Requests\IPStoreRequest;
 use App\Http\Requests\IPUpdateRequest;
-use App\Models\IP;
-use Illuminate\Http\Request;
+use App\Repositories\IP\IPRepository;
 
 class IPController extends Controller
 {
+    private $repository;
+
+    /**
+     * Instantiate repository
+     */
+    public function __construct(IPRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Get list of ip.
      *
@@ -19,9 +28,9 @@ class IPController extends Controller
     public function get()
     {
         try {
-            return new IPResource(IP::all());
+            return new IPResource( $this->repository->all() );
         } catch (\Exception $e) {
-            return response()->json([ 'status' => 'error', 'message' => $e->getMessage() ]);
+            return response()->json( [ 'status' => 'error', 'message' => $e->getMessage() ] );
         }
     }
 
@@ -32,12 +41,12 @@ class IPController extends Controller
      * @return \App\Http\Resources\IPResource
      * @return \Exception
      */
-    public function store(IPStoreRequest $request)
+    public function store( IPStoreRequest $request )
     {
         try {
-            $ip = auth()->user()->load(['ips'])->ips()->updateOrCreate($request->only(['ip', 'label']));
-
-            return new IPResource($ip);
+            return new IPResource( $this->repository->create( array_merge( $request->only( ['ip', 'label']), ['user_id' => auth()->user()->id] ) ) );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([ 'message' => 'Data not found.' ], 404);
         } catch (\Exception $e) {
             return response()->json([ 'status' => 'error', 'message' => $e->getMessage() ]);
         }
@@ -50,10 +59,12 @@ class IPController extends Controller
      * @return \App\Http\Resources\IPResource
      * @return \Exception
      */
-    public function show($id)
+    public function show( $id )
     {
         try {
-            return new IPResource(IP::findOrFail($id));
+            return new IPResource( $this->repository->find( $id ) );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([ 'message' => 'Data not found.' ], 404);
         } catch (\Exception $e) {
             return response()->json([ 'status' => 'error', 'message' => $e->getMessage() ]);
         }
@@ -67,16 +78,12 @@ class IPController extends Controller
      * @return \App\Http\Resources\IPResource
      * @return \Exception
      */
-    public function update(IPUpdateRequest $request, $id)
+    public function update( IPUpdateRequest $request, $id )
     {
         try {
-            $ip = IP::findOrFail($id);
-
-            if( $request->label ) {
-                $ip->update($request->only('label'));
-            }
-
-            return new IPResource($ip);
+            return new IPResource( $this->repository->update( $id, $request->only('label') ) );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([ 'message' => 'Data not found.' ], 404);
         } catch (\Exception $e) {
             return response()->json([ 'status' => 'error', 'message' => $e->getMessage() ]);
         }
