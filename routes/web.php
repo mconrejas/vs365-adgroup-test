@@ -18,19 +18,23 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'api'], function () use ($router) {
-    $router->post('/login', 'AuthController@login');
+    $router->post('/auth/login', 'AuthController@login');
+    $router->post('/auth/refreshtoken', 'AuthController@refresh');
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
-        $router->get('/me', 'AuthController@me');
-        $router->post('/logout', 'AuthController@logout');
-
-        $router->get('/ip', 'IPController@get');
-        $router->post('/ip', 'IPController@store');
-        $router->get('/ip/{id}', 'IPController@show');
-        $router->put('/ip/{id}', 'IPController@update');
+        $router->get('/auth/me', 'AuthController@me');
+        $router->post('/auth/logout', 'AuthController@logout');
 
         $router->group(['prefix' => 'ip'], function () use ($router) {
-            $router->post('/{ip_id}/comment', 'CommentController@save');
+            $router->get('/', 'IpController@get');
+            $router->post('/', 'IpController@store');
+            $router->get('/{id}', 'IpController@show');
+            $router->put('/{id}', 'IpController@update');
+        });
+
+        $router->group(['prefix' => 'comment'], function () use ($router) {
+            $router->post('/', 'CommentController@store');
+            $router->put('/{id}', 'CommentController@update');
         });
     });
 });

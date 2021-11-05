@@ -17,7 +17,7 @@ class CreateIpsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->ipAddress('ip')->unique();
-            $table->string('label');
+            $table->string('label')->nullable();
             $table->timestamps();
         });
     }

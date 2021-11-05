@@ -35,6 +35,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d',
+        'updated_at' => 'datetime:Y-m-d',
+    ];
+
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -55,13 +65,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Set User IP relationship
+     * Set User Ip relationship
      * 
      * @return Illuminate\Database\Eloquent\Model
      */
     public function ips() 
     {
-        return $this->hasMany(IP::class);
+        return $this->hasMany(Ip::class);
     }
 
     /**

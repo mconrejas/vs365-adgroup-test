@@ -3,7 +3,9 @@
 namespace App\Repositories\Base;   
 
 use App\Repositories\Interfaces\RepositoryInterface; 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class BaseRepository implements RepositoryInterface 
@@ -30,15 +32,46 @@ class BaseRepository implements RepositoryInterface
     {
         return $this->model->all();
     }
+
+    /**
+    * @param $column
+    * @param $direction
+    * @return Model
+    */
+   public function orderBy($column, $direction = 'desc'): Builder
+    {
+        return $this->model->orderBy($column, $direction);
+    }
+    
+    /**
+     * @param $length
+     * @return LengthAwarePaginator
+     */
+    public function paginate($length): LengthAwarePaginator
+    {
+        return $this->model->paginate($length);
+    }
  
     /**
     * @param array $attributes
-    *
     * @return Model
     */
     public function create(array $attributes): Model
     {
         return $this->model->create($attributes);
+    }
+
+    /**
+    * @param $id
+    * @param array $attributes
+    * @return Model
+    */
+    public function update($id, array $attributes): Model
+    {
+        $model = $this->model->find($id);
+        $model->update($attributes);
+
+        return $model;
     }
  
     /**

@@ -15,7 +15,7 @@ class UserTest extends TestCase
      */
     public function testUserFailedLogin()
     {
-        $this->json('POST', 'api/login', [
+        $this->json('POST', 'api/auth/login', [
             'email' => 'test@test.com', 
             'password' => 'test'
         ])
@@ -31,7 +31,7 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->json('POST', 'api/login', ['email' => $user->email, 'password' => 'password'])
+        $this->json('POST', 'api/auth/login', ['email' => $user->email, 'password' => 'password'])
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 "access_token",
@@ -50,7 +50,7 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get('api/me')
+            ->get('api/auth/me')
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'name',
